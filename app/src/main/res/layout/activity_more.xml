@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.zjun.demo.MoreActivity">
+
+    <FrameLayout
+        android:id="@+id/fl_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:padding="8dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:padding="8dp">
+
+        <Button
+            android:id="@+id/btn_1"
+            android:text="1"
+            style="@style/StyleButton" />
+
+        <Button
+            android:id="@+id/btn_2"
+            android:layout_centerHorizontal="true"
+            android:text="2_quickCut"
+            style="@style/StyleButton" />
+
+        <Button
+            android:id="@+id/btn_3"
+            android:text="3"
+            android:layout_alignParentRight="true"
+            style="@style/StyleButton" />
+
+
+        <Button
+            android:id="@+id/btn_4"
+            android:layout_centerVertical="true"
+            android:text="4"
+            style="@style/StyleButton"  />
+
+        <Button
+            android:id="@+id/btn_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="5"
+            style="@style/StyleButton"  />
+
+        <Button
+            android:id="@+id/btn_6"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:text="6"
+            style="@style/StyleButton"  />
+
+
+    </RelativeLayout>
+
+</LinearLayout>

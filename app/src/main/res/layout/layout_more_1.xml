@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zjun.widget.RingTimeView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="50dp"
+    android:layout_marginTop="50dp"
+    android:background="#dcdede"
+    app:rtv_ringBgColor="#b2b8b8"
+    app:rtv_sectionColor="#c8d421"
+    app:rtv_ringWidth="20dp"
+    app:rtv_anchorDiameter="40dp"
+    app:rtv_anchorStrokeWidth="5dp"
+    app:rtv_sectionColor2="#d231e6"
+    app:rtv_sectionColor3="#4c8af4"
+    app:rtv_degreeLongWidth="2dp"
+    app:rtv_degreeShortWidth="1dp"
+    />

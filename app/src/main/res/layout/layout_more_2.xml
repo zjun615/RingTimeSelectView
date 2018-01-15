@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zjun.widget.RingTimeView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="50dp"
+    android:layout_marginTop="50dp"
+    android:background="#dcdede"
+    app:rtv_gravity="center_horizontal"
+    app:rtv_quickCutEnable="true"
+    app:rtv_degreeShortLength="0dp"
+    />

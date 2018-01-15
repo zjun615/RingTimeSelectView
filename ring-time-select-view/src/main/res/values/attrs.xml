@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RingTimeView">
+        <!--重力-->
+        <attr name="rtv_gravity">
+            <flag name="top" value="0x01"/>
+            <flag name="bottom" value="0x02"/>
+            <flag name="center_vertical" value="0x03"/>
+            <flag name="left" value="0x04"/>
+            <flag name="right" value="0x08"/>
+            <flag name="center_horizontal" value="0x0C"/>
+            <flag name="center" value="0x0F"/>
+        </attr>
+        <attr name="rtv_initialMinutes" format="integer"/>
+        <!--未选圆环宽度、背景色-->
+        <attr name="rtv_ringWidth" format="dimension|reference"/>
+        <attr name="rtv_ringBgColor" format="color|reference"/>
+
+        <!--已选时间段的圆环属性-->
+        <attr name="rtv_sectionSum" format="integer"/>
+        <!--快速截取：点击已选时间段的圆环内，把截止时间修改到当前时间点-->
+        <attr name="rtv_quickCutEnable" format="boolean"/>
+        <attr name="rtv_sectionColor" format="color|reference"/>
+        <attr name="rtv_sectionColor2" format="color|reference"/>
+        <attr name="rtv_sectionColor3" format="color|reference"/>
+
+        <!--锚点基本属性-->
+        <attr name="rtv_anchorDiameter" format="dimension|reference"/>
+        <attr name="rtv_anchorStrokeWidth" format="dimension|reference"/>
+        <attr name="rtv_anchorTextSize" format="dimension|reference"/>
+        <attr name="rtv_anchorNeedMerge" format="boolean"/>
+
+        <!--起始锚点-->
+        <attr name="rtv_anchorStartColor" format="color|reference"/>
+        <attr name="rtv_anchorStartStrokeColor" format="color|reference"/>
+        <attr name="rtv_anchorStartText" format="string|reference"/>
+        <attr name="rtv_anchorStartTextColor" format="color|reference"/>
+
+        <!--终点锚点-->
+        <attr name="rtv_anchorEndColor" format="color|reference"/>
+        <attr name="rtv_anchorEndStrokeColor" format="color|reference"/>
+        <attr name="rtv_anchorEndText" format="string|reference"/>
+        <attr name="rtv_anchorEndTextColor" format="color|reference"/>
+
+        <!--刻度属性-->
+        <attr name="rtv_degreeColor" format="color|reference"/>
+        <attr name="rtv_degreeLongLength" format="dimension|reference"/>
+        <attr name="rtv_degreeLongWidth" format="dimension|reference"/>
+        <attr name="rtv_degreeShortLength" format="dimension|reference"/>
+        <attr name="rtv_degreeShortWidth" format="dimension|reference"/>
+
+        <!--刻度数值属性-->
+        <attr name="rtv_numberSize" format="dimension|reference"/>
+        <attr name="rtv_numberColor" format="color|reference"/>
+    </declare-styleable>
+</resources>
