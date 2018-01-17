@@ -6,6 +6,8 @@
     android:layout_marginBottom="50dp"
     android:layout_marginTop="50dp"
     android:background="#dcdede"
+    app:rtv_startMinute="15"
+    app:rtv_endMinute="45"
     app:rtv_gravity="right"
     app:rtv_ringWidth="50dp"
     app:rtv_anchorDiameter="50dp"

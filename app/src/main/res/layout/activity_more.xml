@@ -21,31 +21,31 @@
         android:padding="8dp">
 
         <Button
-            android:id="@+id/btn_1"
-            android:text="1"
+            android:id="@+id/btn_gradual_color"
+            android:text="GradualColor"
             style="@style/StyleButton" />
 
         <Button
-            android:id="@+id/btn_2"
+            android:id="@+id/btn_quick_cut"
             android:layout_centerHorizontal="true"
-            android:text="2_quickCut"
+            android:text="QuickCut"
             style="@style/StyleButton" />
 
         <Button
-            android:id="@+id/btn_3"
-            android:text="3"
+            android:id="@+id/btn_different_color"
+            android:text="DifferentColor"
             android:layout_alignParentRight="true"
             style="@style/StyleButton" />
 
 
         <Button
-            android:id="@+id/btn_4"
+            android:id="@+id/btn_no_numbers"
             android:layout_centerVertical="true"
-            android:text="4"
+            android:text="NoNumbers"
             style="@style/StyleButton"  />
 
         <Button
-            android:id="@+id/btn_5"
+            android:id="@+id/btn_chinese"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -53,7 +53,7 @@
             style="@style/StyleButton"  />
 
         <Button
-            android:id="@+id/btn_6"
+            android:id="@+id/btn_multi_section"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:text="6"

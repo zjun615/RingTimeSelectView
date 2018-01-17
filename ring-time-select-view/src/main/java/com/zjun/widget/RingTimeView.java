@@ -28,14 +28,20 @@ import java.util.List;
  *  圆形时间选择器
  *
  * @author Ralap
- * @version v1
  * @description 用于选择多段0~60min之间的时间。
  *          1、新增：点击空白处（最大数量由{@link #sectionSum}决定）
- *          2、修改：拖动时间段的起始/终止位置；或开启快速截取功能{{@link #quickCutEnable}}，直接点击时间段中间进行修改
+ *          2、修改：拖动时间段的起始/终止位置；或开启快速截取功能{@link #quickCutEnable}，直接点击时间段中间进行修改
  *          3、删除：拖动时间段，让起始位置和终止位置一样，则删除
  *          4、回调：新增、拖动修改、拖动删除时，都有回调，当然首先你得设置添加回调接口IOnTimeChangedListener
  *
  * @date 2018-01-12
+ * @version
+ *          v2: 2018-01-17
+ *              1. 增加属性{@link #startMinute}和{@link #endMinute}，为了布局中能自定义起止时间，查看效果
+ *              2. 把{@link TimePart}从{@link IOnTimeChangedListener}里提取出来
+ *              3. 增加获取当前所有时间段的方法{@link #getTimeSections()}
+ *              4. 修复Bug：在{@link #onTouchEvent(MotionEvent)}的MotionEvent.ACTION_DOWN中添加时，未判断界限，导致NullPointerException
+ *          v1
  */
 public class RingTimeView extends View {
     private static final String TAG = "RingTimeView";
@@ -57,15 +63,26 @@ public class RingTimeView extends View {
     private static final double RADIAN      = 180 / Math.PI;
 
     /**
-     * 最小、最小分钟值
+     * 最小、最大分钟值
      */
-    private static final int MIN_MINUTE     = 0;   // 最小分钟
-    private static final int MAX_MINUTE     = 60;  // 最大分钟
+    private static final int MIN_MINUTE     = 0;
+    private static final int MAX_MINUTE     = 60;
 
     /**
      * 平滑过渡值，一个滑动误差范围：防止跳跃现象
      */
     private static final int SMOOTH_RANGE_VALUE = 5;
+
+    /**
+     * 初始化时间的起始分钟，范围∈[0, 60]
+     * 在布局中设置此属性和{@link #endMinute}，能查看时间段和锚点的效果
+     */
+    private int startMinute;
+    /**
+     * 初始化时间的终点分钟，范围∈[0, 60]
+     * 在布局中设置此属性和{@link #startMinute}，能查看时间段和锚点的效果
+     */
+    private int endMinute;
 
     /**
      * 重力
@@ -268,6 +285,8 @@ public class RingTimeView extends View {
      */
     private void initAttrs(AttributeSet attrs, int defStyle) {
         TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.RingTimeView, defStyle, 0);
+        startMinute = ta.getInt(R.styleable.RingTimeView_rtv_startMinute, -1);
+        endMinute = ta.getInt(R.styleable.RingTimeView_rtv_endMinute, -1);
         gravity = ta.getInt(R.styleable.RingTimeView_rtv_gravity, GRAVITY_LEFT | GRAVITY_TOP);
         initialMinutes = ta.getInt(R.styleable.RingTimeView_rtv_initialMinutes, 5);
 
@@ -317,10 +336,36 @@ public class RingTimeView extends View {
             anchorEndText = "OFF";
         }
 
+
+        if (startMinute < -1 || startMinute > MAX_MINUTE) {
+            throw new IllegalArgumentException("The value of startMinute should between 0 and 60");
+        }
+        if (endMinute < -1 || endMinute > MAX_MINUTE) {
+            throw new IllegalArgumentException("The value of endMinute should between 0 and 60");
+        }
+        if (startMinute > endMinute) {
+            throw new IllegalArgumentException("The endMinute must be larger than startMinute");
+        }
+
         if (sectionSum < 1 || sectionSum >= MAX_MINUTE) {
             throw new IllegalArgumentException("The value of sectionSum must between 1 and 60");
         }
+
+        /*
+         初始化属性中的时间段
+         */
         mTimeSections = new TimeSection[sectionSum];
+        if (startMinute != -1 && endMinute != -1) {
+            TimeSection.TimeAnchor start = new TimeSection.TimeAnchor();
+            TimeSection.TimeAnchor end = new TimeSection.TimeAnchor();
+            start.minute = startMinute;
+            end.minute = endMinute;
+
+            TimeSection section = new TimeSection();
+            section.start = start;
+            section.end = end;
+            mTimeSections[0] = section;
+        }
     }
 
     /**
@@ -503,15 +548,17 @@ public class RingTimeView extends View {
                 break;
         }
 
-        initShowSections();
+        addInitializeSections();
     }
 
 
     /**
-     * 为了布局预览效果而增加。使用前先调用{@link #clearTimeSections()}清除或直接设置{@link #setTimeSections(List)}
+     * 初始化时间段的x、y值等。使用前先调用{@link #clearTimeSections()}清除或直接设置{@link #setTimeSections(List)}
      */
-    private void initShowSections() {
-        mTimeSections[0] = createTimeSection(15, 45);
+    private void addInitializeSections() {
+        if (startMinute != -1 && endMinute != -1) {
+            mTimeSections[0] = createTimeSection(startMinute, endMinute);
+        }
     }
 
     private TimeSection createTimeSection(int startMinute, int endMinute) {
@@ -774,7 +821,7 @@ public class RingTimeView extends View {
     }
 
     /**
-     * 判断点（x，y）是否在圆环上的可选时间段上，即空白区域
+     * 判断点（x，y）是否在圆环上的已添加时间段上，即空白区域
      * @param x     坐标x
      * @param y     坐标y
      * @return  true-yes
@@ -850,10 +897,16 @@ public class RingTimeView extends View {
                     if (isInRingArea(x, y)) {
                         /*
                          在圆环内，未选中锚点时
-                         1. 判断是否可以添加的条件：按下 + 圆环上 + 不在已有时间段上
+                         1. 判断是否可以添加的条件：
+                            a. 圆环上的非已有时间段上按下
+                            b. 将创建的时间段没有超过界限
                          2. 判断是否在已有时间段上
                          */
                         if (isInBlankArea(x, y)) {
+                            // 是否超界限
+                            if (mDownEndMinute > MAX_MINUTE) {
+                                return super.onTouchEvent(event);
+                            }
                             // 检查是否还可以添加：还没达到最大数量
                             int addIndex = -1;
                             for (int i = 0; i < mTimeSections.length; i++) {
@@ -868,7 +921,7 @@ public class RingTimeView extends View {
                                 // 刷新并回调
                                 refresh();
                                 if (mListener != null) {
-                                    IOnTimeChangedListener.TimePart part = new IOnTimeChangedListener.TimePart();
+                                    TimePart part = new TimePart();
                                     part.start = mTimeSections[addIndex].start.minute;
                                     part.end = mTimeSections[addIndex].end.minute;
                                     mListener.onInsert(part);
@@ -1046,24 +1099,12 @@ public class RingTimeView extends View {
      * 刷新，并回调
      */
     private void refresh() {
-        List<IOnTimeChangedListener.TimePart> list = new ArrayList<>();
-        for (TimeSection section : mTimeSections) {
-            if (section != null) {
-                IOnTimeChangedListener.TimePart part = new IOnTimeChangedListener.TimePart();
-                part.start = section.start.minute;
-                part.end = section.end.minute;
-                list.add(part);
-            }
-        }
-
-        // 按从小到大排序
-        Collections.sort(list, new IOnTimeChangedListener.TimePartCompare());
-
         if (mListener != null) {
-            mListener.onChanged(this, list);
+            mListener.onChanged(this, getTimeSections());
         }
         postInvalidate();
     }
+
 
     /**
      * 根据分钟生产锚点
@@ -1157,12 +1198,31 @@ public class RingTimeView extends View {
         mListener = listener;
     }
 
+    /**
+     * 获取当前的时间段集合值。这些时间段已经按起始时间，从小到大排好了序
+     * @return  时间段集合
+     */
+    public synchronized List<TimePart> getTimeSections() {
+        List<TimePart> list = new ArrayList<>();
+        for (TimeSection section : mTimeSections) {
+            if (section != null) {
+                TimePart part = new TimePart();
+                part.start = section.start.minute;
+                part.end = section.end.minute;
+                list.add(part);
+            }
+        }
+
+        // 按从小到大排序
+        Collections.sort(list, new TimePart.TimePartComparator());
+        return list;
+    }
 
     /**
      * 设置时间段集合
      * @param partList  时间段集合
      */
-    public void setTimeSections(List<IOnTimeChangedListener.TimePart> partList) {
+    public synchronized void setTimeSections(List<TimePart> partList) {
         if (partList == null) {
             return;
         }
@@ -1175,7 +1235,7 @@ public class RingTimeView extends View {
         }
 
         int insertPos = 0;
-        for (IOnTimeChangedListener.TimePart part : partList) {
+        for (TimePart part : partList) {
             if (part != null) {
                 if (!checkSection(part)) {
                     throw new IllegalArgumentException("The minutes of part must between 0 and 60, and end is larger than start!");
@@ -1191,20 +1251,20 @@ public class RingTimeView extends View {
     }
 
     /**
-     * 检查是否是正常的TimePart
-     */
-    private boolean checkSection(IOnTimeChangedListener.TimePart part) {
-        return part.start < part.end && part.start >= MIN_MINUTE && part.end <= MAX_MINUTE;
-    }
-
-    /**
      * 清除所有时间段
      */
-    public void clearTimeSections(){
+    public synchronized void clearTimeSections(){
         for (int i = 0; i < mTimeSections.length; i++) {
             mTimeSections[i] = null;
         }
         refresh();
+    }
+
+    /**
+     * 检查是否是正常的TimePart
+     */
+    private boolean checkSection(TimePart part) {
+        return part.start < part.end && part.start >= MIN_MINUTE && part.end <= MAX_MINUTE;
     }
 
     /**
@@ -1283,41 +1343,44 @@ public class RingTimeView extends View {
          */
         void onSelectFinished();
 
-        class TimePart {
-            private int start;
-            private int end;
 
-            public TimePart(){}
+    }
 
-            public TimePart(int start, int end) {
-                this.start = start;
-                this.end = end;
-            }
+    public static class TimePart {
+        private int start;
+        private int end;
 
-            public int getStart() {
-                return start;
-            }
+        public TimePart(){}
 
-            public void setStart(int start) {
-                this.start = start;
-            }
-
-            public int getEnd() {
-                return end;
-            }
-
-            public void setEnd(int end) {
-                this.end = end;
-            }
-
+        public TimePart(int start, int end) {
+            this.start = start;
+            this.end = end;
         }
 
-        class TimePartCompare implements Comparator<TimePart> {
+        public int getStart() {
+            return start;
+        }
+
+        public void setStart(int start) {
+            this.start = start;
+        }
+
+        public int getEnd() {
+            return end;
+        }
+
+        public void setEnd(int end) {
+            this.end = end;
+        }
+
+        static class TimePartComparator implements Comparator<TimePart> {
 
             @Override
             public int compare(TimePart timePart, TimePart t1) {
                 return timePart.start - t1.start;
             }
         }
+
     }
+
 }

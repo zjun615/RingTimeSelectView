@@ -40,32 +40,19 @@ public class MainActivity extends AppCompatActivity {
         tv_time = findViewById(R.id.tv_time);
 
         initView();
+        initData();
     }
 
     private void initView() {
         rtv_time.setOnTimeChangeListener(new RingTimeView.IOnTimeChangedListener() {
             @Override
-            public void onChanged(RingTimeView view, List<TimePart> timePartList) {
+            public void onChanged(RingTimeView view, List<RingTimeView.TimePart> timePartList) {
                 Log.d(TAG, "onChanged: ");
-                if (timePartList == null || timePartList.isEmpty()) {
-                    tv_time.setText("No TimePart");
-                    return;
-                }
-                StringBuilder sb = new StringBuilder();
-                for (TimePart part : timePartList) {
-                    sb.append(",  ")
-                            .append("08:").append(fillZero(part.getStart()))
-                            .append("-08:").append(fillZero(part.getEnd()));
-                }
-                if (sb.length() > 0) {
-                    sb.delete(0, 2);
-                }
-                sb.insert(0, "Time: ");
-                tv_time.setText(sb.toString());
+                updateTime(timePartList);
             }
 
             @Override
-            public void onInsert(TimePart part) {
+            public void onInsert(RingTimeView.TimePart part) {
                 Log.d(TAG, String.format("onInsert: %d ~ %d", part.getStart(), part.getEnd()));
             }
 
@@ -86,18 +73,42 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void initData() {
+        updateTime(rtv_time.getTimeSections());
+    }
+
+    private void updateTime(List<RingTimeView.TimePart> timePartList) {
+        if (timePartList == null || timePartList.isEmpty()) {
+            tv_time.setText("No TimePart");
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (RingTimeView.TimePart part : timePartList) {
+            sb.append(",  ")
+                    .append("08:").append(fillZero(part.getStart()))
+                    .append("-08:").append(fillZero(part.getEnd()));
+        }
+        if (sb.length() > 0) {
+            sb.delete(0, 2);
+        }
+        sb.insert(0, "Time: ");
+        tv_time.setText(sb.toString());
+    }
+
     private String fillZero(int num) {
         return num < 10 ? "0" + num : String.valueOf(num);
     }
 
 
 
+
+
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_set:
-                List<RingTimeView.IOnTimeChangedListener.TimePart> partList = new ArrayList<>();
-                partList.add(new RingTimeView.IOnTimeChangedListener.TimePart(10, 20));
-                partList.add(new RingTimeView.IOnTimeChangedListener.TimePart(40, 50));
+                List<RingTimeView.TimePart> partList = new ArrayList<>();
+                partList.add(new RingTimeView.TimePart(10, 20));
+                partList.add(new RingTimeView.TimePart(40, 50));
                 rtv_time.setTimeSections(partList);
                 break;
             case R.id.btn_clear:
