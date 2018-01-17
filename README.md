@@ -12,8 +12,7 @@ A multi-selector for time between 0 and 60 minute
  - 修改：滑动起始点或终止点
  
 ## 其他效果：
-![1](https://github.com/zjun615/RingTimeSelectView/blob/master/img/1.png)
-![3](https://github.com/zjun615/RingTimeSelectView/blob/master/img/3.png)
+![1](https://github.com/zjun615/RingTimeSelectView/blob/master/img/1.png) ![3](https://github.com/zjun615/RingTimeSelectView/blob/master/img/3.png)
 ![4](https://github.com/zjun615/RingTimeSelectView/blob/master/img/4.png)
 
 
