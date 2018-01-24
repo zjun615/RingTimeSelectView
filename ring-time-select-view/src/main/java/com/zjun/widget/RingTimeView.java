@@ -208,7 +208,7 @@ public class RingTimeView extends View {
 
 
     /**
-     * 圆环半径
+     * 圆环中心圆的半径
      */
     private float mRingRadius;
     /**
