@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="RingTimeView">
+    <declare-styleable name="RingTimeSelectView">
         <!--初始化时间段，可用于展示效果用-->
         <attr name="rtv_startMinute" format="integer"/>
         <attr name="rtv_endMinute" format="integer"/>

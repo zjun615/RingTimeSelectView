@@ -43,7 +43,7 @@ import java.util.List;
  *              4. 修复Bug：在{@link #onTouchEvent(MotionEvent)}的MotionEvent.ACTION_DOWN中添加时，未判断界限，导致NullPointerException
  *          v1
  */
-public class RingTimeView extends View {
+public class RingTimeSelectView extends View {
     private static final String TAG = "RingTimeView";
 
     private static final int GRAVITY_TOP                = 0b00000001;
@@ -265,15 +265,15 @@ public class RingTimeView extends View {
      */
     private IOnTimeChangedListener mListener;
 
-    public RingTimeView(Context context) {
+    public RingTimeSelectView(Context context) {
         this(context, null);
     }
 
-    public RingTimeView(Context context, AttributeSet attrs) {
+    public RingTimeSelectView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public RingTimeView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RingTimeSelectView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         initAttrs(attrs, defStyleAttr);
@@ -284,44 +284,44 @@ public class RingTimeView extends View {
      * 初始化属性
      */
     private void initAttrs(AttributeSet attrs, int defStyle) {
-        TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.RingTimeView, defStyle, 0);
-        startMinute = ta.getInt(R.styleable.RingTimeView_rtv_startMinute, -1);
-        endMinute = ta.getInt(R.styleable.RingTimeView_rtv_endMinute, -1);
-        gravity = ta.getInt(R.styleable.RingTimeView_rtv_gravity, GRAVITY_LEFT | GRAVITY_TOP);
-        initialMinutes = ta.getInt(R.styleable.RingTimeView_rtv_initialMinutes, 5);
+        TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.RingTimeSelectView, defStyle, 0);
+        startMinute = ta.getInt(R.styleable.RingTimeSelectView_rtv_startMinute, -1);
+        endMinute = ta.getInt(R.styleable.RingTimeSelectView_rtv_endMinute, -1);
+        gravity = ta.getInt(R.styleable.RingTimeSelectView_rtv_gravity, GRAVITY_LEFT | GRAVITY_TOP);
+        initialMinutes = ta.getInt(R.styleable.RingTimeSelectView_rtv_initialMinutes, 5);
 
-        ringWidth = ta.getDimension(R.styleable.RingTimeView_rtv_ringWidth, dp2px(30));
-        ringBgColor = ta.getColor(R.styleable.RingTimeView_rtv_ringBgColor, Color.parseColor("#a7a7a7"));
+        ringWidth = ta.getDimension(R.styleable.RingTimeSelectView_rtv_ringWidth, dp2px(30));
+        ringBgColor = ta.getColor(R.styleable.RingTimeSelectView_rtv_ringBgColor, Color.parseColor("#a7a7a7"));
 
-        sectionSum = ta.getInt(R.styleable.RingTimeView_rtv_sectionSum, 3);
-        quickCutEnable = ta.getBoolean(R.styleable.RingTimeView_rtv_quickCutEnable, false);
-        sectionColor = ta.getColor(R.styleable.RingTimeView_rtv_sectionColor, Color.parseColor("#148c75"));
-        sectionColor2 = ta.getColor(R.styleable.RingTimeView_rtv_sectionColor2, -1);
-        sectionColor3 = ta.getColor(R.styleable.RingTimeView_rtv_sectionColor3, -1);
+        sectionSum = ta.getInt(R.styleable.RingTimeSelectView_rtv_sectionSum, 3);
+        quickCutEnable = ta.getBoolean(R.styleable.RingTimeSelectView_rtv_quickCutEnable, false);
+        sectionColor = ta.getColor(R.styleable.RingTimeSelectView_rtv_sectionColor, Color.parseColor("#148c75"));
+        sectionColor2 = ta.getColor(R.styleable.RingTimeSelectView_rtv_sectionColor2, -1);
+        sectionColor3 = ta.getColor(R.styleable.RingTimeSelectView_rtv_sectionColor3, -1);
 
-        anchorDiameter = ta.getDimension(R.styleable.RingTimeView_rtv_anchorDiameter, dp2px(50));
-        anchorStrokeWidth = ta.getDimension(R.styleable.RingTimeView_rtv_anchorStrokeWidth, dp2px(6));
-        anchorTextSize = ta.getDimension(R.styleable.RingTimeView_rtv_anchorTextSize, sp2px(16));
-        anchorNeedMerge = ta.getBoolean(R.styleable.RingTimeView_rtv_anchorNeedMerge, true);
+        anchorDiameter = ta.getDimension(R.styleable.RingTimeSelectView_rtv_anchorDiameter, dp2px(50));
+        anchorStrokeWidth = ta.getDimension(R.styleable.RingTimeSelectView_rtv_anchorStrokeWidth, dp2px(6));
+        anchorTextSize = ta.getDimension(R.styleable.RingTimeSelectView_rtv_anchorTextSize, sp2px(16));
+        anchorNeedMerge = ta.getBoolean(R.styleable.RingTimeSelectView_rtv_anchorNeedMerge, true);
 
-        anchorStartColor = ta.getColor(R.styleable.RingTimeView_rtv_anchorStartColor, Color.parseColor("#007ffe"));
-        anchorStartStrokeColor = ta.getColor(R.styleable.RingTimeView_rtv_anchorStartStrokeColor, Color.parseColor("#FFFFFF"));
-        anchorStartText = ta.getString(R.styleable.RingTimeView_rtv_anchorStartText);
-        anchorStartTextColor = ta.getColor(R.styleable.RingTimeView_rtv_anchorStartTextColor, Color.parseColor("#FFFFFF"));
+        anchorStartColor = ta.getColor(R.styleable.RingTimeSelectView_rtv_anchorStartColor, Color.parseColor("#007ffe"));
+        anchorStartStrokeColor = ta.getColor(R.styleable.RingTimeSelectView_rtv_anchorStartStrokeColor, Color.parseColor("#FFFFFF"));
+        anchorStartText = ta.getString(R.styleable.RingTimeSelectView_rtv_anchorStartText);
+        anchorStartTextColor = ta.getColor(R.styleable.RingTimeSelectView_rtv_anchorStartTextColor, Color.parseColor("#FFFFFF"));
 
-        anchorEndColor = ta.getColor(R.styleable.RingTimeView_rtv_anchorEndColor, anchorStartColor);
-        anchorEndStrokeColor = ta.getColor(R.styleable.RingTimeView_rtv_anchorEndStrokeColor, anchorStartStrokeColor);
-        anchorEndText = ta.getString(R.styleable.RingTimeView_rtv_anchorEndText);
-        anchorEndTextColor = ta.getColor(R.styleable.RingTimeView_rtv_anchorEndTextColor, anchorStartTextColor);
+        anchorEndColor = ta.getColor(R.styleable.RingTimeSelectView_rtv_anchorEndColor, anchorStartColor);
+        anchorEndStrokeColor = ta.getColor(R.styleable.RingTimeSelectView_rtv_anchorEndStrokeColor, anchorStartStrokeColor);
+        anchorEndText = ta.getString(R.styleable.RingTimeSelectView_rtv_anchorEndText);
+        anchorEndTextColor = ta.getColor(R.styleable.RingTimeSelectView_rtv_anchorEndTextColor, anchorStartTextColor);
 
-        degreeColor = ta.getColor(R.styleable.RingTimeView_rtv_degreeColor, Color.parseColor("#888888"));
-        degreeLongLength = ta.getDimension(R.styleable.RingTimeView_rtv_degreeLongLength, -1);
-        degreeLongWidth = ta.getDimension(R.styleable.RingTimeView_rtv_degreeLongWidth, dp2px(2));
-        degreeShortLength = ta.getDimension(R.styleable.RingTimeView_rtv_degreeShortLength, -1);
-        degreeShortWidth = ta.getDimension(R.styleable.RingTimeView_rtv_degreeShortWidth, degreeLongWidth);
+        degreeColor = ta.getColor(R.styleable.RingTimeSelectView_rtv_degreeColor, Color.parseColor("#888888"));
+        degreeLongLength = ta.getDimension(R.styleable.RingTimeSelectView_rtv_degreeLongLength, -1);
+        degreeLongWidth = ta.getDimension(R.styleable.RingTimeSelectView_rtv_degreeLongWidth, dp2px(2));
+        degreeShortLength = ta.getDimension(R.styleable.RingTimeSelectView_rtv_degreeShortLength, -1);
+        degreeShortWidth = ta.getDimension(R.styleable.RingTimeSelectView_rtv_degreeShortWidth, degreeLongWidth);
 
-        numberSize = ta.getDimension(R.styleable.RingTimeView_rtv_numberSize, sp2px(14));
-        numberColor = ta.getColor(R.styleable.RingTimeView_rtv_numberColor, Color.parseColor("#888888"));
+        numberSize = ta.getDimension(R.styleable.RingTimeSelectView_rtv_numberSize, sp2px(14));
+        numberColor = ta.getColor(R.styleable.RingTimeSelectView_rtv_numberColor, Color.parseColor("#888888"));
         ta.recycle();
 
         /*
@@ -1312,14 +1312,16 @@ public class RingTimeView extends View {
         }
     }
 
-
+    /**
+     * 时间变化监听接口
+     */
     public interface IOnTimeChangedListener {
         /**
          * 当变化时，所有数据提交给回调
          * @param view          本控件
          * @param timePartList  所有时间段集合，已按时间从小到大排序
          */
-        void onChanged(RingTimeView view, List<TimePart> timePartList);
+        void onChanged(RingTimeSelectView view, List<TimePart> timePartList);
 
         /**
          * 当插入一条时间段时，回调

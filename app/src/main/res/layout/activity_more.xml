@@ -49,14 +49,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="5"
+            android:text="Chinese"
             style="@style/StyleButton"  />
 
         <Button
             android:id="@+id/btn_multi_section"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:text="6"
+            android:text="MultiSections"
             style="@style/StyleButton"  />
 
 

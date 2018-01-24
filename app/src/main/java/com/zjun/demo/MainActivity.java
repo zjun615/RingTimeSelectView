@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.zjun.widget.RingTimeView;
+import com.zjun.widget.RingTimeSelectView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private LinearLayout ll_parent;
-    private RingTimeView rtv_time;
+    private RingTimeSelectView rtv_time;
     private TextView tv_time;
 
     @Override
@@ -44,15 +44,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        rtv_time.setOnTimeChangeListener(new RingTimeView.IOnTimeChangedListener() {
+        rtv_time.setOnTimeChangeListener(new RingTimeSelectView.IOnTimeChangedListener() {
             @Override
-            public void onChanged(RingTimeView view, List<RingTimeView.TimePart> timePartList) {
+            public void onChanged(RingTimeSelectView view, List<RingTimeSelectView.TimePart> timePartList) {
                 Log.d(TAG, "onChanged: ");
                 updateTime(timePartList);
             }
 
             @Override
-            public void onInsert(RingTimeView.TimePart part) {
+            public void onInsert(RingTimeSelectView.TimePart part) {
                 Log.d(TAG, String.format("onInsert: %d ~ %d", part.getStart(), part.getEnd()));
             }
 
@@ -77,13 +77,13 @@ public class MainActivity extends AppCompatActivity {
         updateTime(rtv_time.getTimeSections());
     }
 
-    private void updateTime(List<RingTimeView.TimePart> timePartList) {
+    private void updateTime(List<RingTimeSelectView.TimePart> timePartList) {
         if (timePartList == null || timePartList.isEmpty()) {
             tv_time.setText("No TimePart");
             return;
         }
         StringBuilder sb = new StringBuilder();
-        for (RingTimeView.TimePart part : timePartList) {
+        for (RingTimeSelectView.TimePart part : timePartList) {
             sb.append(",  ")
                     .append("08:").append(fillZero(part.getStart()))
                     .append("-08:").append(fillZero(part.getEnd()));
@@ -106,9 +106,9 @@ public class MainActivity extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_set:
-                List<RingTimeView.TimePart> partList = new ArrayList<>();
-                partList.add(new RingTimeView.TimePart(10, 20));
-                partList.add(new RingTimeView.TimePart(40, 50));
+                List<RingTimeSelectView.TimePart> partList = new ArrayList<>();
+                partList.add(new RingTimeSelectView.TimePart(10, 20));
+                partList.add(new RingTimeSelectView.TimePart(40, 50));
                 rtv_time.setTimeSections(partList);
                 break;
             case R.id.btn_clear:

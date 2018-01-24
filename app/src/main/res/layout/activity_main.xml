@@ -16,7 +16,7 @@
         android:layout_marginBottom="50dp"
         android:orientation="vertical"
         >
-        <com.zjun.widget.RingTimeView
+        <com.zjun.widget.RingTimeSelectView
             android:id="@+id/rtv_time"
             android:layout_width="match_parent"
             android:layout_height="300dp"
